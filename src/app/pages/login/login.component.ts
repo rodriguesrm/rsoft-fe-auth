@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   isPost: boolean = false;
   hideMessage: boolean = false;
   errorMessage: string = null;
+  isAuthenticatedUser: boolean;
 
   constructor(
     private loginService: LoginService
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.checkUserAuthenticated();
   }
 
   createForm(model: LoginModel) {
@@ -49,15 +51,10 @@ export class LoginComponent implements OnInit {
       this.hideMessage = false;
       this.errorMessage = "Enter any username and password.";
     } else {
-      localStorage.clear();
+      this.unRegisterUser();
       this.loginService.loginUser(this.username.value, this.password.value)
         .then((res) => {
-          console.log(res);
-          let result = res as LoginResponse;
-          localStorage.setItem("token", result.token);
-          localStorage.setItem("expirationDate", result.expirationDate.toString());
-          localStorage.setItem("roles", JSON.stringify(result.roles));
-          localStorage.setItem("user", JSON.stringify(result.user));
+          this.registerUser(res as LoginResponse);
         })
         .catch((res: HttpErrorResponse) => {
           this.hideMessage = false;
@@ -68,6 +65,36 @@ export class LoginComponent implements OnInit {
           console.log(res);
         })
         .catch((error) => console.error(error));
+    }
+  }
+
+  registerUser(userData: LoginResponse) {
+    console.log(userData);
+    localStorage.setItem("token", userData.token);
+    localStorage.setItem("expirationDate", userData.expirationDate.toString());
+    localStorage.setItem("roles", JSON.stringify(userData.roles));
+    localStorage.setItem("user", JSON.stringify(userData.user));
+    this.checkUserAuthenticated();
+  }
+
+  unRegisterUser() {
+    localStorage.clear();
+    this.isAuthenticatedUser = false;
+  }
+
+  checkUserAuthenticated() {
+    let token = localStorage.getItem("token");
+    let expirationDate = localStorage.getItem("expirationDate");
+    if (token && expirationDate) {
+      let tokenDeadline = new Date(expirationDate);
+      if (tokenDeadline.getTime() < new Date().getTime()) {
+        this.isAuthenticatedUser = false;
+        localStorage.clear();
+      } else {
+        this.isAuthenticatedUser = true;
+      }
+    } else {
+      this.isAuthenticatedUser = false;
     }
   }
 

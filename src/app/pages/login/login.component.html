@@ -2,7 +2,7 @@
     <h3>Login</h3>
 </div>
 
-<div class="box">
+<div *ngIf="!isAuthenticatedUser" class="box">
 
     <h6 class="form-title center">Login to your account</h6>
 
@@ -42,5 +42,16 @@
         </div>
 
     </form>
+
+</div>
+
+<div *ngIf="isAuthenticatedUser" class="box">
+
+    <h6 class="form-title center">User Authenticated</h6>
+
+    <div class="form-actions content-right">
+        <button type="button" class="btn btn-secondary" (click)="unRegisterUser()">Logoff <i class="m-icon-swapright m-icon-white"></i>
+        </button>
+    </div>
 
 </div>
