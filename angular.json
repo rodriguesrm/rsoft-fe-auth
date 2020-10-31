@@ -25,7 +25,11 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/assets/global/plugins/font-awesome/css/font-awesome.min.css",
+              "src/assets/global/plugins/simple-line-icons/simple-line-icons.min.css",
+              "src/assets/global/plugins/uniform/css/uniform.default.css",
+              "src/assets/global/plugins/select2/select2.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

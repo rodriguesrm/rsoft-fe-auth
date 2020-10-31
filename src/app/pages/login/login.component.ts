@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   username: FormControl;
   password: FormControl;
   isPost: boolean = false;
+  hideMessage: boolean = false;
 
   constructor() {
     this.createForm(new LoginModel());
@@ -30,8 +31,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  onHideMessage() {
+    this.hideMessage = true;
+  }
+
   onSubmit() {
     this.isPost = true;
+    this.hideMessage = false;
     if (this.formLogin.valid) {
       alert('TODO:POST TO BACKEND');
     }
