@@ -1,13 +1,14 @@
 import { LoginRequest } from './../../models/login-request';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private url: string = 'http://192.168.3.1:5100/api/v1.0/Auth?details=true';
+  private url: string = environment.apiUrl; // 'http://192.168.3.1:5100/api/v1.0/Auth?details=true';
 
   constructor(
     private httpClient: HttpClient
@@ -21,7 +22,8 @@ export class LoginService {
 
   loginUser(username: string, password: string) {
     let login = new LoginRequest(username, password);
-    return this.httpClient.post(this.url, JSON.stringify(login), this.httpOptions).toPromise();
+    const action = 'api/v1.0/Auth?details=true';
+    return this.httpClient.post(this.url + action, JSON.stringify(login), this.httpOptions).toPromise();
   }
 
 }

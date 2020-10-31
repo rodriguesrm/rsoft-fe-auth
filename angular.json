@@ -37,6 +37,14 @@
             ]
           },
           "configurations": {
+            "localhost": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -73,6 +81,9 @@
             "browserTarget": "rsoft-authentication:build"
           },
           "configurations": {
+            "localhost": {
+              "browserTarget": "rsoft-authentication:build:localhost"
+            },
             "production": {
               "browserTarget": "rsoft-authentication:build:production"
             }
@@ -121,6 +132,9 @@
             "devServerTarget": "rsoft-authentication:serve"
           },
           "configurations": {
+            "localhost": {
+              "devServerTarget": "rsoft-authentication:serve:localhost"
+            },
             "production": {
               "devServerTarget": "rsoft-authentication:serve:production"
             }

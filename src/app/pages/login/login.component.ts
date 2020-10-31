@@ -49,13 +49,18 @@ export class LoginComponent implements OnInit {
       this.hideMessage = false;
       this.errorMessage = "Enter any username and password.";
     } else {
+      localStorage.clear();
       this.loginService.loginUser(this.username.value, this.password.value)
         .then((res) => {
           console.log(res);
           let result = res as LoginResponse;
-          alert('Login sucess: ' + result.token);
+          localStorage.setItem("token", result.token);
+          localStorage.setItem("expirationDate", result.expirationDate.toString());
+          localStorage.setItem("roles", JSON.stringify(result.roles));
+          localStorage.setItem("user", JSON.stringify(result.user));
         })
         .catch((res: HttpErrorResponse) => {
+          this.hideMessage = false;
           if (res.status === 401)
             this.errorMessage = res.statusText + ' - ' + res.error;
           else
