@@ -127,6 +127,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "rsoft-authentication"
+    }
+  },
+  "defaultProject": "rsoft-authentication",
+  "cli": {
+    "analytics": false
+  }
 }

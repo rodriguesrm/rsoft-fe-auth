@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoginModel } from './login-model';
+import { LoginService } from 'src/app/services/auth/login.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,9 @@ export class LoginComponent implements OnInit {
   isPost: boolean = false;
   hideMessage: boolean = false;
 
-  constructor() {
+  constructor(
+    private loginService: LoginService
+  ) {
     this.createForm(new LoginModel());
   }
 
@@ -39,7 +42,11 @@ export class LoginComponent implements OnInit {
     this.isPost = true;
     this.hideMessage = false;
     if (this.formLogin.valid) {
-      alert('TODO:POST TO BACKEND');
+      // this.loginService.loginUser(this.username.value, this.password.value)
+      this.loginService.loginUser('', '')
+        .subscribe((res) => {
+          console.log(res);
+        });
     }
   }
 
