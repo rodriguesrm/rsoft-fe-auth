@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoginModel } from './login-model';
 import { LoginService } from 'src/app/services/auth/login.service';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -19,15 +21,21 @@ export class LoginComponent implements OnInit {
   hideMessage: boolean = false;
   errorMessage: string = null;
   isAuthenticatedUser: boolean;
+  redirect: string = null;
 
   constructor(
-    private loginService: LoginService
+    private loginService: LoginService,
+    private route: Router,
+    private activeRoute: ActivatedRoute
   ) {
     this.createForm(new LoginModel());
   }
 
   ngOnInit(): void {
     this.checkUserAuthenticated();
+    this.activeRoute.queryParamMap.subscribe((queryParams) => {
+      this.redirect = queryParams.get("redirect");
+    });
   }
 
   createForm(model: LoginModel) {
@@ -55,6 +63,8 @@ export class LoginComponent implements OnInit {
       this.loginService.loginUser(this.username.value, this.password.value)
         .then((res) => {
           this.registerUser(res as LoginResponse);
+          this.isPost = false;
+          this.formLogin.reset();
         })
         .catch((res: HttpErrorResponse) => {
           this.hideMessage = false;
@@ -75,10 +85,15 @@ export class LoginComponent implements OnInit {
     localStorage.setItem("roles", JSON.stringify(userData.roles));
     localStorage.setItem("user", JSON.stringify(userData.user));
     this.checkUserAuthenticated();
+    if (this.redirect)
+      window.open(this.redirect);
   }
 
   unRegisterUser() {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("expirationDate");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("user");
     this.isAuthenticatedUser = false;
   }
 
@@ -88,13 +103,12 @@ export class LoginComponent implements OnInit {
     if (token && expirationDate) {
       let tokenDeadline = new Date(expirationDate);
       if (tokenDeadline.getTime() < new Date().getTime()) {
-        this.isAuthenticatedUser = false;
-        localStorage.clear();
+        this.unRegisterUser();
       } else {
         this.isAuthenticatedUser = true;
       }
     } else {
-      this.isAuthenticatedUser = false;
+      this.unRegisterUser();
     }
   }
 
