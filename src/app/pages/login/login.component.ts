@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoginModel } from './login-model';
 import { LoginService } from 'src/app/services/auth/login.service';
-import { Router } from '@angular/router';
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
@@ -25,7 +24,6 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private loginService: LoginService,
-    private route: Router,
     private activeRoute: ActivatedRoute
   ) {
     this.createForm(new LoginModel());
