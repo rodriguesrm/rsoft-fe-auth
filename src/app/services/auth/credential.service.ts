@@ -20,12 +20,14 @@ export class CredentialService {
       .set('app-access', environment.appAccess)
   };
 
-  saveCredential(token: string, password: string, firstAccess: boolean): Promise<Object> {
+  saveCredential(token: string, username: string, password: string, firstAccess: boolean): Promise<Object> {
     let credential = new CredentialRequest(token, password);
-    if (firstAccess)
+    if (firstAccess) {
+      credential.login = username;
       return this.httpClient.post(this.url + "api/v1.0/credential/first", JSON.stringify(credential), this.httpOptions).toPromise();
-    else
+    } else {
       return this.httpClient.put(this.url + "api/v1.0/credential/recovery", JSON.stringify(credential), this.httpOptions).toPromise();
+    }
   }
 
 }

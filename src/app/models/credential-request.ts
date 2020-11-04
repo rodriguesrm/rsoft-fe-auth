@@ -1,6 +1,7 @@
 export class CredentialRequest {
 
     public token: string;
+    public login: string;
     public password: string;
 
     constructor(
@@ -8,6 +9,7 @@ export class CredentialRequest {
         password: string
     ) { 
         this.token = token;
+        this.login = null;
         this.password = password;
     }
 

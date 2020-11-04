@@ -12,6 +12,7 @@ import { CredentialService } from 'src/app/services/auth/credential.service';
 export class RegisterCredentialComponent implements OnInit {
 
   formCredential: FormGroup;
+  username: FormControl;
   password: FormControl;
   confirmPassword: FormControl;
 
@@ -20,7 +21,7 @@ export class RegisterCredentialComponent implements OnInit {
   errorMessage: string = null;
 
   token: string = null;
-  recovery: boolean = false;
+  firstAccess: boolean = false;
 
   constructor(
     private credentialService: CredentialService,
@@ -30,15 +31,17 @@ export class RegisterCredentialComponent implements OnInit {
   ngOnInit(): void {
     this.activeRoute.queryParamMap.subscribe((queryParams) => {
       this.token = queryParams.get("token");
-      this.recovery = (queryParams.get("recovery") === "true" || queryParams.get("recovery") === "1");
+      this.firstAccess = (queryParams.get("type").toLowerCase() === "create");
     });
-    this.createForm(null, null);
+    this.createForm();
   }
 
-  createForm(pwd: string, confirmpwd: string) {
-    this.password = new FormControl(pwd, Validators.required);
-    this.confirmPassword = new FormControl(confirmpwd, Validators.required);
+  createForm() {
+    this.username = new FormControl(null, (this.firstAccess ? Validators.required : null));
+    this.password = new FormControl(null, Validators.required);
+    this.confirmPassword = new FormControl(null, Validators.required);
     this.formCredential = new FormGroup({
+      username: this.username,
       password: this.password,
       confirmPassword: this.confirmPassword
     });
@@ -54,7 +57,7 @@ export class RegisterCredentialComponent implements OnInit {
     this.onHideMessage();
     if (this.formCredential.invalid) {
       this.hideMessage = false;
-      this.errorMessage = "Enter any username and password.";
+      this.errorMessage = "Enter the information for the required fields";
     } else {
 
       if (this.password.value !== this.confirmPassword.value) {
@@ -62,7 +65,7 @@ export class RegisterCredentialComponent implements OnInit {
         this.errorMessage = "Passwords entered do not match.";
       } else {
 
-        this.credentialService.saveCredential(this.token, this.password.value, !this.recovery)
+        this.credentialService.saveCredential(this.token, this.username.value, this.password.value, this.firstAccess)
           .then(() => {
             this.isPost = false;
             this.formCredential.reset();
